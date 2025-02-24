@@ -63,7 +63,7 @@ class windows_ext(build_ext):
 
 
 setup(
-    name="mecab-ko",
+    name="python-mecab-ko",
     version="0.1.0",
     cmdclass={"build_ext": unix_build_ext if not is_windows else windows_ext},
     ext_modules=[
@@ -74,5 +74,6 @@ setup(
             cxx_std=14,
         ),
     ],
+    packages=["mecab_ko"],
     py_modules=["mecab"],
 )
