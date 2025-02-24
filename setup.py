@@ -63,6 +63,7 @@ class windows_ext(build_ext):
 
 
 setup(
+    version="0.1.0",
     cmdclass={"build_ext": unix_build_ext if not is_windows else windows_ext},
     ext_modules=[
         Pybind11Extension(
