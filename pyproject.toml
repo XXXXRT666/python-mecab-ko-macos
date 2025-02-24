@@ -6,22 +6,6 @@ build-backend = "setuptools.build_meta"
 build = "cp*"
 skip = "*-musllinux*"
 
-before-all = "bash scripts/cibw_before_all.sh {package}"
-build-verbosity = "1"
-
-test-requires = ["pytest", "psutil"]
-test-command = "pytest {project}/tests"
-
-[tool.cibuildwheel.linux]
-test-skip = "*-*linux_aarch64"
-
-[tool.cibuildwheel.macos]
-test-skip = "*-macosx_arm64 *-macosx_universal2:arm64"
-
-[tool.cibuildwheel.windows]
-test-skip = "*-win_arm64"
-
-
 [tool.black]
 line-length = 120
 
