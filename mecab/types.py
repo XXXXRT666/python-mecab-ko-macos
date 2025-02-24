@@ -4,7 +4,7 @@ from enum import Enum
 from pathlib import Path
 from typing import NamedTuple, Optional
 
-import _mecab
+import _mecab_ko
 
 
 class Span(NamedTuple):
