@@ -28,7 +28,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: wheels
+          name: wheels-${{ matrix.arch }}
           path: ./wheelhouse/*.whl
 
   deploy-wheels:
@@ -38,10 +38,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Download wheels artifact
+      - name: Download wheels artifact x86_64
         uses: actions/download-artifact@v4
         with:
-          name: wheels
+          name: wheels-x86_64
+          path: dist/
+
+       - name: Download wheels artifact arm64
+        uses: actions/download-artifact@v4
+        with:
+          name: wheels-arm64
           path: dist/
 
       - name: Generate package index
