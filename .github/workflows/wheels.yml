@@ -44,7 +44,7 @@ jobs:
           name: wheels-x86_64
           path: dist/
 
-       - name: Download wheels artifact arm64
+      - name: Download wheels artifact arm64
         uses: actions/download-artifact@v4
         with:
           name: wheels-arm64
