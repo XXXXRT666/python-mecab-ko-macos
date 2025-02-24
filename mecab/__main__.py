@@ -5,7 +5,7 @@ from typing import Optional
 
 import mecab_ko_dic
 
-import _mecab_ko
+import _mecab_ko as _mecab
 from mecab import mecabrc_path
 
 _rcfile_option = ["--rcfile", str(mecabrc_path)]
