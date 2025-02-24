@@ -55,8 +55,8 @@ class unix_build_ext(build_ext):
 class windows_ext(build_ext):
     def build_extension(self, extension):
         if extension.name == "_mecab_ko":
-            extension.include_dirs.append(r"C:\mecab_ko")
-            extension.library_dirs.append(r"C:\mecab_ko")
+            extension.include_dirs.append(r"C:\mecab")
+            extension.library_dirs.append(r"C:\mecab")
             extension.libraries.append("libmecab")
 
         super().build_extension(extension)
