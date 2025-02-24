@@ -66,7 +66,7 @@ setup(
     cmdclass={"build_ext": unix_build_ext if not is_windows else windows_ext},
     ext_modules=[
         Pybind11Extension(
-            name="_mecab",
+            name="_mecab_ko",
             sources=sorted(glob("mecab/pybind/**/*.cpp", recursive=True)),
             include_dirs=["mecab/pybind/_mecab"],
             cxx_std=14,
