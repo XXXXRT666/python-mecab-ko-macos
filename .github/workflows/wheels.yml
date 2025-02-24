@@ -5,31 +5,6 @@ on:
   push:
 
 jobs:
-  build_wheels_arm64:
-    name: Build wheels on ${{ matrix.os }} (${{ matrix.arch }})
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [macos-14]
-        arch: [arm64]
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install mecab-ko
-        run: brew install mecab-ko
-
-      - name: Build wheels
-        uses: pypa/cibuildwheel@v2.19.2
-        env:
-          MACOSX_DEPLOYMENT_TARGET: "14.0"
-          CIBW_ARCHS_MACOS: ${{ matrix.arch }}
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: cibw-wheels-${{ matrix.os }}-${{ matrix.arch }}
-          path: ./wheelhouse/*.whl
-  
   build_wheels_x86_64:
     name: Build wheels on ${{ matrix.os }} (${{ matrix.arch }})
     runs-on: ${{ matrix.os }}
@@ -48,6 +23,31 @@ jobs:
         uses: pypa/cibuildwheel@v2.19.2
         env:
           MACOSX_DEPLOYMENT_TARGET: "12.0"
+          CIBW_ARCHS_MACOS: ${{ matrix.arch }}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cibw-wheels-${{ matrix.os }}-${{ matrix.arch }}
+          path: ./wheelhouse/*.whl
+
+  build_wheels_arm64:
+    name: Build wheels on ${{ matrix.os }} (${{ matrix.arch }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-14]
+        arch: [arm64]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install mecab-ko
+        run: brew install mecab-ko
+
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v2.19.2
+        env:
+          MACOSX_DEPLOYMENT_TARGET: "14.0"
           CIBW_ARCHS_MACOS: ${{ matrix.arch }}
 
       - uses: actions/upload-artifact@v4
