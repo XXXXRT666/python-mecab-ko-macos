@@ -9,7 +9,7 @@ void initialize_node(py::module &m);
 void initialize_path(py::module &m);
 void initialize_tagger(py::module &m);
 
-PYBIND11_MODULE(_mecab_ko, m) {
+PYBIND11_MODULE(_mecab_ko_, m) {
   initialize_cli(m);
   initialize_dictionaryinfo(m);
   initialize_lattice(m);

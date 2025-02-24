@@ -3,9 +3,8 @@ from __future__ import annotations
 import sys
 from typing import Optional
 
+import _mecab_ko_ as _mecab
 import mecab_ko_dic
-
-import _mecab_ko as _mecab
 
 from .mecab import mecabrc_path
 

@@ -1,1 +1,1 @@
-from mecab_ko import *
+from mecab_ko_ import *

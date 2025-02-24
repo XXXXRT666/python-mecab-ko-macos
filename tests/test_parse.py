@@ -1,5 +1,5 @@
-from mecab_ko.mecab import MeCab
-from mecab_ko.types import Feature, Morpheme, Span
+from mecab_ko_.mecab import MeCab
+from mecab_ko_.types import Feature, Morpheme, Span
 
 
 def test_parse(mecab: MeCab):

@@ -1,4 +1,4 @@
-from mecab_ko.mecab import MeCab
+from mecab_ko_.mecab import MeCab
 
 
 def test_nouns(mecab: MeCab):

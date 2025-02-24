@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-import _mecab_ko as _mecab
+import _mecab_ko_ as _mecab
 
 
 def create_lattice(sentence: str) -> _mecab.Lattice:

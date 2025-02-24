@@ -7,9 +7,8 @@ from pathlib import Path
 from typing import NamedTuple, Optional
 
 import pytest
-
-from mecab_ko.mecab import MeCab
-from mecab_ko.types import Feature
+from mecab_ko_.mecab import MeCab
+from mecab_ko_.types import Feature
 
 
 class Morpheme(NamedTuple):

@@ -42,7 +42,7 @@ class Executable:
 
 class unix_build_ext(build_ext):
     def build_extension(self, extension):
-        if extension.name == "_mecab_ko":
+        if extension.name == "_mecab_ko_":
             mecab_config = Executable("mecab-config")
 
             extension.include_dirs.append(mecab_config("--inc-dir"))
@@ -54,7 +54,7 @@ class unix_build_ext(build_ext):
 
 class windows_ext(build_ext):
     def build_extension(self, extension):
-        if extension.name == "_mecab_ko":
+        if extension.name == "_mecab_ko_":
             extension.include_dirs.append(r"C:\mecab")
             extension.library_dirs.append(r"C:\mecab")
             extension.libraries.append("libmecab")
@@ -68,13 +68,13 @@ setup(
     cmdclass={"build_ext": unix_build_ext if not is_windows else windows_ext},
     ext_modules=[
         Pybind11Extension(
-            name="_mecab_ko",
-            sources=sorted(glob("mecab_ko/pybind/**/*.cpp", recursive=True)),
-            include_dirs=["mecab_ko/pybind/_mecab"],
+            name="_mecab_ko_",
+            sources=sorted(glob("mecab_ko_/pybind/**/*.cpp", recursive=True)),
+            include_dirs=["mecab_ko_/pybind/_mecab"],
             cxx_std=14,
         ),
     ],
-    packages=["mecab_ko"],
+    packages=["mecab_ko_"],
     py_modules=["mecab"],
     include_package_data=True,
 )
