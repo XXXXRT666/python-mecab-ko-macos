@@ -6,8 +6,8 @@ from typing import Optional, Union
 import mecab_ko_dic
 
 import _mecab_ko as _mecab
-from mecab.types import Dictionary, Morpheme
-from mecab.utils import create_lattice, ensure_list, to_csv
+from mecab_ko.types import Dictionary, Morpheme
+from mecab_ko.utils import create_lattice, ensure_list, to_csv
 
 PathLike = Union[str, Path]
 

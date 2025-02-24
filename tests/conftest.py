@@ -1,6 +1,6 @@
 import pytest
 
-from mecab import MeCab
+from mecab_ko.mecab import MeCab
 
 
 @pytest.fixture

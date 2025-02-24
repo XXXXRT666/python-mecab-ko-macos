@@ -8,7 +8,7 @@ from pathlib import Path
 
 import psutil
 
-from mecab import MeCab, Morpheme
+from mecab_ko.mecab import MeCab, Morpheme
 
 tests_path = Path(__file__).parent.absolute()
 corpus_path = tests_path / "corpus.txt"

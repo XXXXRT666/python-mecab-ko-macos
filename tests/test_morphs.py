@@ -1,4 +1,4 @@
-from mecab import MeCab
+from mecab_ko.mecab import MeCab
 
 
 def test_morphs(mecab: MeCab):
