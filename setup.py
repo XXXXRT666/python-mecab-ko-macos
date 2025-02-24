@@ -67,9 +67,10 @@ setup(
     ext_modules=[
         Pybind11Extension(
             name="_mecab_ko",
-            sources=sorted(glob("mecab/pybind/**/*.cpp", recursive=True)),
-            include_dirs=["mecab/pybind/_mecab"],
+            sources=sorted(glob("mecab-ko/pybind/**/*.cpp", recursive=True)),
+            include_dirs=["mecab-ko/pybind/_mecab"],
             cxx_std=14,
+            py_modules=["mecab"],
         ),
     ],
 )
