@@ -85,13 +85,14 @@ jobs:
       - name: Generate HTML index
         run: |
           mkdir -p docs/python_mecab_ko
-          echo "<html><body>" > docs/python_mecab_ko/index.html
+          echo "<html>" > docs/python_mecab_ko/index.html
+          echo "  <body>" >> docs/python_mecab_ko/index.html
           for file in wheels/*.whl; do
             filename=$(basename $file)
-            echo "<a href='https://github.com/${{ github.repository }}/releases/download/${{ github.event.inputs.tag_name || github.ref_name }}/$filename'>$filename</a><br>" >> docs/python_mecab_ko/index.html
+            echo "    <a href='https://github.com/${{ github.repository }}/releases/download/${{ github.event.inputs.tag_name || github.ref_name }}/$filename'>$filename</a><br>" >> docs/python_mecab_ko/index.html
           done
-          echo "</body></html>" >> docs/python_mecab_ko/index.html
-
+          echo "  </body>" >> docs/python_mecab_ko/index.html
+          echo "</html>" >> docs/python_mecab_ko/index.html
       - name: Commit and push index
         run: |
           git config --global user.email "actions@github.com"
