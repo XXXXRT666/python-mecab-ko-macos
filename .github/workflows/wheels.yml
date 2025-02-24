@@ -1,4 +1,4 @@
-name: Build
+name: Build and Release
 
 on:
   workflow_dispatch:
@@ -30,6 +30,7 @@ jobs:
         env:
           CIBW_ARCHS_MACOS: ${{ matrix.arch }}
           MACOSX_DEPLOYMENT_TARGET: "14.0"
+          CIBW_BUILD: cp39-* cp310-* cp311-* cp312-*
 
       - uses: actions/upload-artifact@v4
         with:
@@ -65,3 +66,34 @@ jobs:
         with:
           tag_name: ${{ github.event.inputs.tag_name || github.ref_name }}
           files: dist/*
+
+  generate_simple_index:
+    name: Generate Simple Index
+    needs: upload_release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: cibw-wheels-*
+          path: wheels
+          merge-multiple: true
+
+      - name: Generate HTML index
+        run: |
+          mkdir -p docs/python_mecab_ko
+          echo "<html><body>" > docs/python_mecab_ko/index.html
+          for file in wheels/*.whl; do
+            filename=$(basename $file)
+            echo "<a href='https://github.com/${{ github.repository }}/releases/download/${{ github.event.inputs.tag_name || github.ref_name }}/$filename'>$filename</a><br>" >> docs/python_mecab_ko/index.html
+          done
+          echo "</body></html>" >> docs/python_mecab_ko/index.html
+
+      - name: Commit and push index
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+          git add docs/python_mecab_ko/index.html
+          git commit -m "Update Simple Index for ${{ github.event.inputs.tag_name || github.ref_name }}" || echo "No changes to commit"
+          git push origin main
