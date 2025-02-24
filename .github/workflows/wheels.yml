@@ -1,102 +1,68 @@
-name: Build and Release
+name: Build & Publish macOS Wheels to GitHub Pages
 
 on:
   workflow_dispatch:
-    inputs:
-      tag_name:
-        description: 'Release tag'
-        required: true
   push:
-    tags:
-      - v*
+    branches:
+      - main
 
 jobs:
-  build_wheels:
-    name: Build wheels on ${{ matrix.os }} (${{ matrix.arch }})
-    runs-on: ${{ matrix.os }}
+  build-wheels:
+    name: Build macOS universal2 wheels
+    runs-on: macos-latest
     strategy:
       matrix:
-        os: [macos-13]
-        arch: [x86_64, arm64]
-
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install mecab-ko
-        run: |
-          export MACOSX_DEPLOYMENT_TARGET=13.0
-          brew install mecab-ko
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
 
-      - name: Build wheels
-        uses: pypa/cibuildwheel@v2.19.2
+      - name: Install dependencies (MeCab)
+        run: |
+          brew install mecab-ko mecab-ko-dic
+
+      - name: Install cibuildwheel
+        run: |
+          pip install cibuildwheel
+
+      - name: Build universal2 wheels
         env:
-          CIBW_ARCHS_MACOS: ${{ matrix.arch }}
-          MACOSX_DEPLOYMENT_TARGET: "13.0"
-          CIBW_BUILD: cp39-* cp310-* cp311-* cp312-*
+          CIBW_ARCHS_MACOS: universal2
+          CIBW_BUILD: cp${{ matrix.python-version }}-*
+          CIBW_BEFORE_BUILD_MACOS: "brew install mecab-ko mecab-ko-dic"
+        run: |
+          cibuildwheel --output-dir wheelhouse
 
-      - uses: actions/upload-artifact@v4
+      - name: Upload wheels artifact
+        uses: actions/upload-artifact@v4
         with:
-          name: cibw-wheels-${{ matrix.os }}-${{ matrix.arch }}
-          path: ./wheelhouse/*.whl
+          name: wheels
+          path: wheelhouse/*.whl
 
-  build_sdist:
-    name: Build source distribution
+  deploy-wheels:
+    name: Deploy Wheels & Index to GH Pages
     runs-on: ubuntu-latest
+    needs: build-wheels
     steps:
       - uses: actions/checkout@v4
 
-      - name: Build sdist
-        run: pipx run build --sdist
-
-      - uses: actions/upload-artifact@v4
+      - name: Download wheels artifact
+        uses: actions/download-artifact@v4
         with:
-          name: cibw-sdist
-          path: dist/*.tar.gz
+          name: wheels
+          path: dist/
 
-  upload_release:
-    needs: [build_wheels, build_sdist]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/download-artifact@v4
+      - name: Generate package index
+        uses: girder/create-pip-index-action@main
         with:
-          pattern: cibw-*
-          path: dist
-          merge-multiple: true
+          package_directory: dist/
 
-      - name: Release
-        uses: softprops/action-gh-release@v1
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          tag_name: ${{ github.event.inputs.tag_name || github.ref_name }}
-          files: dist/*
-
-  generate_simple_index:
-    name: Generate Simple Index
-    needs: upload_release
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/download-artifact@v4
-        with:
-          pattern: cibw-wheels-*
-          path: wheels
-          merge-multiple: true
-
-      - name: Generate HTML index
-        run: |
-          mkdir -p docs/python_mecab_ko
-          echo "<html>" > docs/python_mecab_ko/index.html
-          echo "  <body>" >> docs/python_mecab_ko/index.html
-          for file in wheels/*.whl; do
-            filename=$(basename $file)
-            echo "    <a href='https://github.com/${{ github.repository }}/releases/download/${{ github.event.inputs.tag_name || github.ref_name }}/$filename'>$filename</a><br>" >> docs/python_mecab_ko/index.html
-          done
-          echo "  </body>" >> docs/python_mecab_ko/index.html
-          echo "</html>" >> docs/python_mecab_ko/index.html
-      - name: Commit and push index
-        run: |
-          git config --global user.email "actions@github.com"
-          git config --global user.name "GitHub Actions"
-          git add docs/python_mecab_ko/index.html
-          git commit -m "Update Simple Index for ${{ github.event.inputs.tag_name || github.ref_name }}" || echo "No changes to commit"
-          git push origin main
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: dist/
