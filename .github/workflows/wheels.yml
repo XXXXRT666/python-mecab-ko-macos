@@ -24,7 +24,7 @@ jobs:
 
       - name: Install mecab-ko
         run: |
-          export MACOSX_DEPLOYMENT_TARGET=14.0
+          export MACOSX_DEPLOYMENT_TARGET=13.0
           brew install mecab-ko
 
       - name: Build wheels
