@@ -29,9 +29,13 @@ jobs:
           MACOSX_DEPLOYMENT_TARGET: 13.0
           CIBW_REPAIR_WHEEL_COMMAND_MACOS: >
             delocate-wheel --require-archs {delocate_archs} -w {dest_dir} {wheel} &&
-            mkdir -p {dest_dir}/$(basename {wheel} .whl)/.dylibs &&
-            cp $(brew --prefix mecab-ko)/lib/libmecab.dylib {dest_dir}/$(basename {wheel} .whl)/.dylibs/ &&
-            delocate-wheel -w {dest_dir} {dest_dir}/$(basename {wheel} .whl)
+            mkdir -p {dest_dir}/temp &&
+            unzip -q {wheel} -d {dest_dir}/temp &&
+            mkdir -p {dest_dir}/temp/.dylibs &&
+            cp $(brew --prefix mecab-ko)/lib/libmecab.dylib {dest_dir}/temp/.dylibs/ &&
+            cd {dest_dir}/temp && zip -qr {dest_dir}/$(basename {wheel}) . &&
+            delocate-wheel -w {dest_dir} {dest_dir}/$(basename {wheel}) &&
+            rm -rf {dest_dir}/temp
         run: |
           cibuildwheel --output-dir wheelhouse
 
