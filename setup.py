@@ -64,7 +64,7 @@ class windows_ext(build_ext):
 
 setup(
     name="python-mecab-ko",
-    version="0.1.0",
+    version="0.2.0",
     cmdclass={"build_ext": unix_build_ext if not is_windows else windows_ext},
     ext_modules=[
         Pybind11Extension(
@@ -76,4 +76,5 @@ setup(
     ],
     packages=["mecab_ko"],
     py_modules=["mecab"],
+    include_package_data=True,
 )
