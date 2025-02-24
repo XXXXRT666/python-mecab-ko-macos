@@ -5,13 +5,13 @@ on:
   push:
 
 jobs:
-  build_wheels:
+  build_wheels_arm64:
     name: Build wheels on ${{ matrix.os }} (${{ matrix.arch }})
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [macos-14]
-        arch: [x86_64, arm64]
+        arch: [arm64]
 
     steps:
       - uses: actions/checkout@v4
@@ -29,11 +29,36 @@ jobs:
         with:
           name: cibw-wheels-${{ matrix.os }}-${{ matrix.arch }}
           path: ./wheelhouse/*.whl
+  
+  build_wheels_x86_64:
+    name: Build wheels on ${{ matrix.os }} (${{ matrix.arch }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-12]
+        arch: [arm64]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install mecab-ko
+        run: brew install mecab-ko
+
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v2.19.2
+        env:
+          MACOSX_DEPLOYMENT_TARGET: "12.0"
+          CIBW_ARCHS_MACOS: ${{ matrix.arch }}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cibw-wheels-${{ matrix.os }}-${{ matrix.arch }}
+          path: ./wheelhouse/*.whl
 
   deploy-wheels:
     name: Deploy Wheels & Index to GH Pages
     runs-on: ubuntu-latest
-    needs: build_wheels
+    needs: [build_wheels_arm64, build_wheels_x86_64]
     steps:
       - uses: actions/download-artifact@v4
         with:
